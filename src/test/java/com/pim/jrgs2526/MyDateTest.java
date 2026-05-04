@@ -9,13 +9,33 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class MyDateTest {
+    @ParameterizedTest
+    @CsvSource({"32, FEBRUARY, 2000", "-1, JANUARY, 1999", "0, DECEMBER, 2001", "2, -1, -3"})
+    public void myDateInvalidDateTest(int day, MyDate.Months month, int year) {
+        try {
+            MyDate date = new MyDate(day, month, year);
+        }
+        catch (IllegalArgumentException ex) {
+            return;
+        }
+        Assertions.fail();
+    }
+
     @Test
     public void myDateCorrectEmptyDateTest() {
         MyDate myDate = new MyDate();
+        try {
+            MyDate anotherDate = new MyDate(myDate.getDay(),
+                                            myDate.getMonth(),
+                                            myDate.getYear());
+        }
+        catch (Exception ex) {
+            Assertions.fail();
+        }
     }
 
     @ParameterizedTest
-    @CsvSource({"12, FEBRUARY, 2000", "1, JANUARY, 1999", "31, DECEMBER, 2001"})
+    @CsvSource({"12, FEBRUARY, 2000", "1, JANUARY, 1999", "31, DECEMBER, 2001", "2, MARCH, -3"})
     public void myDateCorrectDateTest(int day, MyDate.Months month, int year) {
         MyDate myDate;
         // First check: a valid date from a leap year
